@@ -8,10 +8,12 @@ import com.kauailabs.navx.frc.AHRS;
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -39,7 +41,7 @@ public class SwerveDrive extends SubsystemBase {
      * <p>
      * This is a measure of how fast the robot should be able to drive in a straight line.
      */
-    public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
+    public static final double MAX_VELOCITY_METERS_PER_SECOND = 5880 / 60.0 *
             SdsModuleConfigurations.MK4I_L2.getDriveReduction() *
             SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
     /**
@@ -70,31 +72,14 @@ public class SwerveDrive extends SubsystemBase {
     private final SwerveModule m_backLeftModule;
     private final SwerveModule m_backRightModule;
 
-    private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+
+    SwerveModuleState[] m_states;
+
+    SwerveDriveOdometry m_odometry;
 
     public SwerveDrive() {
         ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
-        // There are 4 methods you can call to create your swerve modules.
-        // The method you use depends on what motors you are using.
-        //
-        // Mk3SwerveModuleHelper.createFalcon500(...)
-        //   Your module has two Falcon 500s on it. One for steering and one for driving.
-        //
-        // Mk3SwerveModuleHelper.createNeo(...)
-        //   Your module has two NEOs on it. One for steering and one for driving.
-        //
-        // Mk3SwerveModuleHelper.createFalcon500Neo(...)
-        //   Your module has a Falcon 500 and a NEO on it. The Falcon 500 is for driving and the NEO is for steering.
-        //
-        // Mk3SwerveModuleHelper.createNeoFalcon500(...)
-        //   Your module has a NEO and a Falcon 500 on it. The NEO is for driving and the Falcon 500 is for steering.
-        //
-        // Similar helpers also exist for Mk4 modules using the Mk4SwerveModuleHelper class.
-
-        // By default we will use Falcon 500s in standard configuration. But if you use a different configuration or motors
-        // you MUST change it. If you do not, your code will crash on startup.
-        // FIXME Setup motor configuration
         m_frontLeftModule = Mk4iSwerveModuleHelper.createNeo(
                 // This parameter is optional, but will allow you to see the current state of the module on the dashboard.
                 tab.getLayout("Front Left Module", BuiltInLayouts.kList)
@@ -145,6 +130,34 @@ public class SwerveDrive extends SubsystemBase {
                 BACK_RIGHT_MODULE_STEER_ENCODER,
                 BACK_RIGHT_MODULE_STEER_OFFSET
         );
+
+
+        m_odometry = new SwerveDriveOdometry(m_kinematics, getGyroscopeRotation(), new Pose2d(0, 0, new Rotation2d()));
+
+    }
+
+    public void setPosition(Pose2d position) {
+        m_odometry.resetPosition(position, getGyroscopeRotation());
+    }
+
+    public Pose2d getPosition() {
+        return m_odometry.getPoseMeters();
+    }
+
+    public SwerveDriveKinematics getKinematics() {
+        return m_kinematics;
+    }
+
+    public double getMaxAngularVelocity(){
+        return MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+    }
+
+    public double getMaxVelocityMetersPerSecond(){
+        return MAX_VELOCITY_METERS_PER_SECOND;
+    }
+
+    public double getMaxAcceleration(){
+        return 4;
     }
 
     /**
@@ -166,17 +179,29 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     public void drive(ChassisSpeeds chassisSpeeds) {
-        m_chassisSpeeds = chassisSpeeds;
+        m_states = m_kinematics.toSwerveModuleStates(chassisSpeeds);
+    }
+
+    public void setModuleStates(SwerveModuleState[] states){
+        m_states = states;
     }
 
     @Override
     public void periodic() {
-        SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
-        SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
 
-        m_frontLeftModule.set(states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[0].angle.getRadians());
-        m_frontRightModule.set(states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[1].angle.getRadians());
-        m_backLeftModule.set(states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[2].angle.getRadians());
-        m_backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[3].angle.getRadians());
+        SwerveDriveKinematics.desaturateWheelSpeeds(m_states, MAX_VELOCITY_METERS_PER_SECOND);
+
+        m_frontLeftModule.set(m_states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, m_states[0].angle.getRadians());
+        m_frontRightModule.set(m_states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, m_states[1].angle.getRadians());
+        m_backLeftModule.set(m_states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, m_states[2].angle.getRadians());
+        m_backRightModule.set(m_states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, m_states[3].angle.getRadians());
+
+        m_odometry.update(getGyroscopeRotation(),
+                new SwerveModuleState(m_frontLeftModule.getDriveVelocity(), new Rotation2d(m_frontLeftModule.getSteerAngle())),
+                new SwerveModuleState(m_frontRightModule.getDriveVelocity(), new Rotation2d(m_frontRightModule.getSteerAngle())),
+                new SwerveModuleState(m_backLeftModule.getDriveVelocity(), new Rotation2d(m_backLeftModule.getSteerAngle())),
+                new SwerveModuleState(m_backRightModule.getDriveVelocity(), new Rotation2d(m_backRightModule.getSteerAngle()))
+        );
+
     }
 }
