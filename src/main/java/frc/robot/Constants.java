@@ -13,6 +13,21 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    
+    public static final class Modules {
+        public static final int backLeftRot = 14;
+        public static final int backLeftDrive = 5;
+
+        public static final int backRightRot = 6;
+        public static final int backRightDrive = 2;
+
+        public static final int frontLeftRot = 13;
+        public static final int frontLeftDrive = 3;
+
+        public static final int frontRightRot = 11;
+        public static final int frontRightDrive = 12;
+    }
+    
     /**
      * The left-to-right distance between the drivetrain wheels
      *
