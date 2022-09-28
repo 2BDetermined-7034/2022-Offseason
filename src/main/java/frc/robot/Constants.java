@@ -18,8 +18,8 @@ public final class Constants {
         public static final int backLeftRot = 14;
         public static final int backLeftDrive = 5;
 
-        public static final int backRightRot = 6;
-        public static final int backRightDrive = 2;
+        public static final int backRightRot = 2;
+        public static final int backRightDrive = 6;
 
         public static final int frontLeftRot = 13;
         public static final int frontLeftDrive = 3;
