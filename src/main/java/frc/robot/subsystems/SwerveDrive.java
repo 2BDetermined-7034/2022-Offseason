@@ -2,19 +2,6 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-/*
-
-
-                 ██╗ ██╗ ████████╗███████╗███╗   ███╗███████╗ ██████╗
-                ████████╗╚══██╔══╝██╔════╝████╗ ████║██╔════╝██╔════╝
-                ╚██╔═██╔╝   ██║   ███████╗██╔████╔██║█████╗  ██║
-                ████████╗   ██║   ╚════██║██║╚██╔╝██║██╔══╝  ██║
-                ╚██╔═██╔╝   ██║   ███████║██║ ╚═╝ ██║██║     ╚██████╗
-                 ╚═╝ ╚═╝    ╚═╝   ╚══════╝╚═╝     ╚═╝╚═╝      ╚═════╝
-
-
- */
-
 
 package frc.robot.subsystems;
 
@@ -35,7 +22,8 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import static frc.robot.Constants.*;
+import static frc.robot.Constants.Modules.*;
+import static frc.robot.Constants.DriveBase.*;
 
 public class SwerveDrive extends SubsystemBase {
 
@@ -117,8 +105,8 @@ public class SwerveDrive extends SubsystemBase {
         );
 
 
-        m_odometry = new SwerveDriveOdometry(m_kinematics, getGyroscopeRotation(), new Pose2d(0, 0, new Rotation2d()));
-
+        //m_odometry = new SwerveDriveOdometry(m_kinematics, getGyroscopeRotation(), new Pose2d(0, 0, new Rotation2d()));
+        m_states = m_kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, 0));
     }
 
     public void setPosition(Pose2d position) {
@@ -180,13 +168,15 @@ public class SwerveDrive extends SubsystemBase {
         m_frontRightModule.set(m_states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, m_states[1].angle.getRadians());
         m_backLeftModule.set(m_states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, m_states[2].angle.getRadians());
         m_backRightModule.set(m_states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, m_states[3].angle.getRadians());
+        /*
+        m_odometry.update(
+                getGyroscopeRotation(),
+                m_states[0],
+                m_states[1],
+                m_states[2],
+                m_states[3]);
 
-        m_odometry.update(getGyroscopeRotation(),
-                new SwerveModuleState(m_frontLeftModule.getDriveVelocity(), new Rotation2d(m_frontLeftModule.getSteerAngle())),
-                new SwerveModuleState(m_frontRightModule.getDriveVelocity(), new Rotation2d(m_frontRightModule.getSteerAngle())),
-                new SwerveModuleState(m_backLeftModule.getDriveVelocity(), new Rotation2d(m_backLeftModule.getSteerAngle())),
-                new SwerveModuleState(m_backRightModule.getDriveVelocity(), new Rotation2d(m_backRightModule.getSteerAngle()))
-        );
+         */
 
     }
 }
