@@ -20,6 +20,14 @@ public final class Constants {
         public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.5779;
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.5779;
     }
+
+    public static final class Auto {
+        public static final double kS = 0.18656;
+        public static final double kV = 2.64;
+        public static final double kA = 0.38134;
+        public static final double kP = 3.4557;
+    }
+
     public static final class Modules {
         public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 3;
         public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 13;
@@ -44,8 +52,8 @@ public final class Constants {
 
     public static final class Subsystem {
         public static final class Intake {
-            public static final int intakeMotor1 = 0; //FIXME
-            public static final int intakeMotor2 = 0; //FIXME
+            public static final int intakeMotor1Left = 1; //FIXME
+            public static final int intakeMotorRight = 9; //FIXME
 
             public static final int solenoidForward = 3; //FIXME
             public static final int solenoidReverse = 2; //FIXME
@@ -53,14 +61,14 @@ public final class Constants {
             public static final int IDcompressor = 0; //fix maybe?
         }
         public static final class Indexer {
-            public static final int lowerIndexer = 0; //FIXME
-            public static final int higherIndexer = 0; //FIXME
+            public static final int lowerIndexer = 15; //FIXME
+            public static final int higherIndexer = 7; //FIXME
             public static final double speed = 0.85;
         }
 
         public static final class Shooter {
-            public static final int leftShooterMotor = 0; //FIXME
-            public static final int rightShooterMotor = 0; //FIXME
+            public static final int leftShooterMotor = 10; //FIXME
+            public static final int rightShooterMotor = 8; //FIXME
             public static final int passiveOneSpeed = 0;
             public static final int passiveFullSpeed = 0;
             public static final double shooterInc = 0.05;
@@ -69,7 +77,7 @@ public final class Constants {
         }
 
         public static final class Climber {
-            public static final int talonFXMotor = 0; //FIXME
+            public static final int talonFXMotor = 5; //FIXME
             public static final int solenoidForwardID = 0; //FIXME
             public static final int solenoidBackID = 0; //FIXME
             public static final int maxPos = 227440;

@@ -9,6 +9,7 @@ import edu.wpi.first.math.trajectory.TrajectoryParameterizer;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants;
 import frc.robot.subsystems.SwerveDrive;
 
 public class SwervePathGenerator {
@@ -27,15 +28,15 @@ public class SwervePathGenerator {
             DriverStation.reportError("Failed to load trajectory", false);
         }
 
-        var thetaController = new ProfiledPIDController(0.2, 0, 0, new TrapezoidProfile.Constraints(m_swerveDrive.getMaxAngularVelocity(), m_swerveDrive.getMaxAngularVelocity() * 2.0));
+        var thetaController = new ProfiledPIDController(4, 0, 0, new TrapezoidProfile.Constraints(m_swerveDrive.getMaxAngularVelocity(), m_swerveDrive.getMaxAngularVelocity() * 2.0));
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         m_follower = new PPSwerveControllerCommand(
                 m_trajectory,
                 m_swerveDrive::getPosition,
                 m_swerveDrive.getKinematics(),
-                new PIDController(0, 0, 0),
-                new PIDController(0, 0, 0),
+                new PIDController(Constants.Auto.kP, 0, 0),
+                new PIDController(Constants.Auto.kP, 0, 0),
                 thetaController,
                 m_swerveDrive::setModuleStates,
                 m_swerveDrive
