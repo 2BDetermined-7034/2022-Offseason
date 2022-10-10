@@ -55,8 +55,9 @@ public final class Constants {
             public static final int intakeMotor1Left = 1; //FIXME
             public static final int intakeMotorRight = 9; //FIXME
 
-            public static final int solenoidForward = 3; //FIXME
-            public static final int solenoidReverse = 2; //FIXME
+            public static final int solenoidForward = 2;
+            public static final int solenoidReverse = 3;
+            public static final double speed = 0.4;
             public static final double stopSpeed = 0.35; //speed when wrong color
             public static final int IDcompressor = 0; //fix maybe?
         }
@@ -77,15 +78,16 @@ public final class Constants {
         }
 
         public static final class Climber {
-            public static final int talonFXMotor = 5; //FIXME
-            public static final int solenoidForwardID = 0; //FIXME
+            public static final int talonFXMotor = 5;
+            public static final int solenoidForwardID = 1; //FIXME
             public static final int solenoidBackID = 0; //FIXME
             public static final int maxPos = 227440;
             public static final int extendedValue = 312252;
             public static final int encoderAcceptableError = 10;
+            public static final double winchSpeed = 0.9; //fix?
         }
         public static final class Vision {
-            public static final int pGain = 16;
+            public static final int pGain = 5;
 
             public static final double VisX_kP = 1;
             public static final double VisX_MAX = .3;
@@ -102,9 +104,7 @@ public final class Constants {
         }
     }
     public static final class pneumatics {
-        public static final PneumaticsModuleType compressor = PneumaticsModuleType.REVPH;
-        public static final PneumaticsModuleType shifter = PneumaticsModuleType.REVPH;
-        public static final PneumaticsModuleType intake = PneumaticsModuleType.REVPH;
-        public static final PneumaticsModuleType climber = PneumaticsModuleType.REVPH;
+        public static final PneumaticsModuleType pneumaticsModuleType = PneumaticsModuleType.REVPH;
+
     }
 }

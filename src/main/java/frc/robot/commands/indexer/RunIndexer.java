@@ -41,12 +41,12 @@ private final BooleanSupplier m_stop;
     @Override
     public void execute() {
         SmartDashboard.putBoolean("Stop", m_stop.getAsBoolean());
-        if (m_stop.getAsBoolean()){
+        if (m_stop.getAsBoolean() || (m_sensor.getTopSensor() && m_sensor.getBotSensor())){
             m_indexer.setSpeed(0);
         } else if(m_sensor.getTopSensor()) {
-            m_indexer.setIndexer1(0);
+            m_indexer.setIndexer1(m_speed.getAsDouble() / 2);
             m_shooter.setSpeed(Constants.Subsystem.Shooter.passiveOneSpeed);
-            m_indexer.setIndexer2(m_speed.getAsDouble());
+            m_indexer.setIndexer2(0);
         } else {
             m_indexer.setSpeed(m_speed.getAsDouble());
         }

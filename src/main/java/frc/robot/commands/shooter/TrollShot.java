@@ -47,7 +47,7 @@ public class TrollShot extends CommandBase {
         double visSpeed = -5;
         m_shooter.setSpeed(visSpeed);
         if (Math.abs(m_shooter.getVoltage() - visSpeed) <= Constants.Subsystem.Shooter.shooterRange) {
-            new SensorOverride(analogSensor);
+            //new SensorOverride(analogSensor);
             m_indexer.setSpeed(Constants.Subsystem.Indexer.speed);
         }
     }

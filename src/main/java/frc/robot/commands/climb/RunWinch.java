@@ -40,8 +40,8 @@ public class RunWinch extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        //m_legoClimb.runWinch(SmartDashboard.getNumber("TeleClimberWinchSpeed", 0));
-        //m_climber.runWinch(m_fowSpeed.getAsDouble());
+        // m_legoClimb.runWinch(SmartDashboard.getNumber("TeleClimberWinchSpeed", 0));
+        // m_climber.runWinch(m_fowSpeed.getAsDouble());
         double speed = m_fowSpeed.getAsDouble();
         if (m_slow.getAsDouble() >= 0.5) {
             speed /= 2;

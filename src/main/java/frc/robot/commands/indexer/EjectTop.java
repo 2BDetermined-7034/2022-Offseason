@@ -13,7 +13,7 @@ import frc.robot.subsystems.Shooter;
 
 public class EjectTop extends CommandBase {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-    private final DigitalSensor analogSensor;
+    //private final DigitalSensor analogSensor;
 
     private final Shooter m_shooter;
     private final Indexer m_index;
@@ -25,7 +25,7 @@ public class EjectTop extends CommandBase {
      */
     public EjectTop(Shooter subsystem, Indexer indexer, DigitalSensor sensor) {
         this.m_index = indexer;
-        this.analogSensor = sensor;
+        //this.analogSensor = sensor;
         m_shooter = subsystem;
 
         // Use addRequirements() here to declare subsystem dependencies.
@@ -41,9 +41,9 @@ public class EjectTop extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        new SensorOverride(analogSensor);
+        //new SensorOverride(analogSensor);
         m_index.setSpeed(0.8);
-        m_shooter.setSpeed(-3);
+        m_shooter.setSpeed(3);
     }
 
     // Called once the command ends or is interrupted.

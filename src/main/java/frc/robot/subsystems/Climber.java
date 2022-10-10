@@ -25,7 +25,7 @@ public class Climber extends SubsystemBase {
     public Climber() {
         m_winchTalon = new WPI_TalonFX(Constants.Subsystem.Climber.talonFXMotor);
 
-        m_solenoid = new DoubleSolenoid(Constants.pneumatics.climber,Constants.Subsystem.Climber.solenoidForwardID, Constants.Subsystem.Climber.solenoidBackID);
+        m_solenoid = new DoubleSolenoid(Constants.pneumatics.pneumaticsModuleType,Constants.Subsystem.Climber.solenoidForwardID, Constants.Subsystem.Climber.solenoidBackID);
         m_solenoid.set(Value.kForward);
         resetEncoder();
 

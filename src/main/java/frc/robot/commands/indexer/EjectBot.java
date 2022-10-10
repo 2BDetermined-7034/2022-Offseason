@@ -50,7 +50,7 @@ public class EjectBot extends CommandBase {
         if (m_intake.getSolenoid() == DoubleSolenoid.Value.kReverse) {
             m_intake.setSpeed(-0.5);
         }
-        m_shooter.setSpeed(3);
+        m_shooter.setSpeed(-3);
     }
 
     // Called once the command ends or is interrupted.

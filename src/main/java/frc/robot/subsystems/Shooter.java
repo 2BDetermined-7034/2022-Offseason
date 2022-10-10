@@ -23,11 +23,14 @@ public class Shooter extends SubsystemBase {
     public Shooter() {
         m_motor = new CANSparkMax(Constants.Subsystem.Shooter.leftShooterMotor, CANSparkMaxLowLevel.MotorType.kBrushless);
         m_motor2 = new CANSparkMax(Constants.Subsystem.Shooter.rightShooterMotor, CANSparkMaxLowLevel.MotorType.kBrushless);
-        m_controlGroup = new MotorControllerGroup(m_motor, m_motor2);
+
 
         m_motor.setIdleMode(IdleMode.kCoast);
         m_motor2.setIdleMode(IdleMode.kCoast);
+        m_motor.setInverted(false);
+        m_motor2.setInverted(true);
 
+        m_controlGroup = new MotorControllerGroup(m_motor, m_motor2);
         m_speeds = 0;
         SmartDashboard.putNumber("Shooter Speed", 0);
         SmartDashboard.putNumber("ad", 0);
@@ -40,8 +43,6 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putNumber("Shooter Voltage", getVoltage());
         m_motor.setVoltage(m_speeds);
         m_motor2.setVoltage(m_speeds);
-      //m_motor.set(-SmartDashboard.getNumber("Shooter Speed", 0));
-      //m_motor.set(-SmartDashboard.getNumber("Shooter Speed", 0));
   }
 
   /**

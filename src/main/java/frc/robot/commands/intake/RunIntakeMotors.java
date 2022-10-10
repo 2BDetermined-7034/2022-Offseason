@@ -19,17 +19,20 @@ public class RunIntakeMotors extends CommandBase {
      * @param intakeMotor The intake motor
      * @param speed The speed you want the intake to move at.
      */
-    public RunIntakeMotors(CargoIntake intakeMotor, DoubleSupplier speed, DigitalSensor colorSensor, BooleanSupplier stop) {
+
+    public RunIntakeMotors(CargoIntake intakeMotor, DoubleSupplier speed, DigitalSensor colorSensor, BooleanSupplier stop){
         this.fowS = speed;
-        this.m_analog = colorSensor;
         this.m_intake = intakeMotor;
         this.m_stop = stop;
+        this.m_analog = colorSensor;
         addRequirements(intakeMotor);
     }
 
     @Override
     public void initialize() {
-        m_intake.setSolenoid(false);
+        if (!m_analog.sensorBoolean1_2()){
+            m_intake.setSolenoid(false);
+        }
     }
 
     @Override
@@ -41,24 +44,16 @@ public class RunIntakeMotors extends CommandBase {
         } else {
             m_intake.setSpeed(Constants.Subsystem.Intake.stopSpeed);
         }
-
-
     }
 
     @Override
     public boolean isFinished() {
-
-       if(m_analog.sensorBoolean1_2()) {
-           m_intake.setSpeed(0);
-           m_intake.setSolenoid(true);
-       }
-
-        return false;
-
+        return m_analog.sensorBoolean1_2();
     }
 
     @Override
     public void end(boolean interrupted) {
+        m_intake.setSolenoid(true);
         m_intake.setSpeed(0);
     }
 }

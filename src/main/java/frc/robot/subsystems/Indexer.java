@@ -20,6 +20,8 @@ public class Indexer extends SubsystemBase {
         m_indexer2 = new CANSparkMax(Constants.Subsystem.Indexer.higherIndexer, CANSparkMaxLowLevel.MotorType.kBrushless);
         m_indexer1.setIdleMode(CANSparkMax.IdleMode.kBrake);
         m_indexer2.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        m_indexer1.setInverted(true);
+        m_indexer2.setInverted(false);
 
     }
 
@@ -28,8 +30,8 @@ public class Indexer extends SubsystemBase {
      * @param speed The speed of the motor / Double 0-1
      */
     public void setSpeed(double speed) {
-        m_indexer1.set(-speed);
-        m_indexer2.set(-speed);
+        m_indexer1.set(speed);
+        m_indexer2.set(speed);
     }
 
     /**
@@ -45,7 +47,7 @@ public class Indexer extends SubsystemBase {
      * @param speed The speed of a single motor / Double 0-1
      */
     public void setIndexer2(double speed) {
-        m_indexer2.set(-speed);
+        m_indexer2.set(speed);
     }
 
 

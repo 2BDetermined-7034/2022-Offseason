@@ -17,7 +17,7 @@ public class Pneumatics extends SubsystemBase {
     public Compressor comp;
 
     public Pneumatics() {
-        comp = new Compressor(Constants.Subsystem.Intake.IDcompressor, Constants.pneumatics.compressor);
+        comp = new Compressor(Constants.Subsystem.Intake.IDcompressor, Constants.pneumatics.pneumaticsModuleType);
     }
 
     public boolean setCompressor(boolean on) {
