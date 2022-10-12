@@ -26,21 +26,9 @@ public class DigitalSensor extends SubsystemBase {
         SmartDashboard.putBoolean("BotFull?", getBotSensor());
         SmartDashboard.putBoolean("Is Indexer Full?", sensorBoolean1_2());
     }
-    /*
+    public void disable(){
 
-    public boolean sensorBoolean0(){
-        if(override) return false;
-        return getSensor0AvValue();
-        //return m_sensor.getAverageValue() <= 7;
     }
-
-    public boolean sensorBoolean1(){
-        if(override) return false;
-        //return m_sensor2.getAverageValue() <= 7;
-        return getSensor1AvValue();
-    }
-    */
-
 
 
     /**
@@ -70,7 +58,6 @@ public class DigitalSensor extends SubsystemBase {
         if(override) return false;
         return sen1 && sen2;
     }
-
 
     @Override
     public void periodic() {

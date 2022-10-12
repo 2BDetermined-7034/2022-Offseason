@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.Auto.FiveBall;
+import frc.robot.commands.Auto.OneMeter;
 import frc.robot.commands.Drive.DefaultDriveCommand;
 import frc.robot.commands.climb.RunSolenoid;
 import frc.robot.commands.climb.RunWinch;
@@ -63,7 +65,8 @@ public class RobotContainer {
 
     /* Shooter */
     //private final RunShooter m_runShooter = new RunShooter(m_shooter, m_indexer, () -> Constants.shooter.speed, m_analogSenseor);
-
+    private final TestShoot m_testShoot = new TestShoot(m_shooter, m_indexer, m_analogSenseor);
+    private final VisShoot m_shoot = new VisShoot(m_drivetrainSubsystem, m_limeLight, m_analogSenseor, m_indexer, m_shooter);
     /* Indexer */
     private final RunIndexer m_runIndexer = new RunIndexer(m_indexer, m_shooter, () -> Constants.Subsystem.Indexer.speed, m_analogSenseor, m_operator::getAButton);
     //private final SensorOverride m_sensorOverride = new SensorOverride(m_analogSenseor);
@@ -77,7 +80,7 @@ public class RobotContainer {
     private final EjectTop m_ejectTop = new EjectTop(m_shooter, m_indexer, m_analogSenseor);
 
     /* Climber */
-   // public final RunSolenoid m_toggleClimbSolenoid = new RunSolenoid(m_climber);
+    public final RunSolenoid m_toggleClimbSolenoid = new RunSolenoid(m_climber);
 
     //public final AddCorrect addCorrect = new AddCorrect();
     //public final SubCorrect subCorrect = new SubCorrect();
@@ -104,6 +107,7 @@ public class RobotContainer {
 
         // Configure the button bindings
         configureButtonBindings();
+        SmartDashboard.putNumber("shooter", 0);
     }
 
 
@@ -112,7 +116,11 @@ public class RobotContainer {
         new Button(m_controller::getBackButton).whenPressed(m_drivetrainSubsystem::zeroGyroscope);
         new Button(() -> m_controller.getRightTriggerAxis() > 0.1).whenHeld(m_runIntake);
         new Button(() -> m_controller.getRightTriggerAxis() > 0.1).whenHeld(m_runIndexer);
-        new Button(() -> m_controller.getLeftTriggerAxis() > 0.1).whenHeld(new VisShoot(m_drivetrainSubsystem, m_limeLight, m_analogSenseor, m_indexer, m_shooter, () -> true, () -> true));
+        new Button(() -> m_controller.getLeftTriggerAxis() > 0.1).whenHeld(m_shoot);
+        //new Button(m_controller::getBButton).whenHeld(); do 6 volt shot
+        new Button(m_controller::getYButton).whenPressed(m_intakeSolToggle);
+        new Button(m_controller::getAButton).whenHeld(m_trollShot);
+       // new Button(m_controller::getXButton) climb actuate
 
 
         //climbPad.getButton("B").toggleWhenPressed(m_toggleClimbSolenoid);
@@ -120,14 +128,16 @@ public class RobotContainer {
         new Button(m_operator::getStartButton).whenHeld(m_ejectTop);
         new Button(m_operator::getBackButton).whenHeld(m_ejectBot);
 
+        new Button(m_operator::getBButton).whenPressed(m_toggleClimbSolenoid);
         new Button(m_operator::getLeftBumper).whenHeld(new RunWinch(m_climber, () -> -Constants.Subsystem.Climber.winchSpeed * 0.85, m_operator::getLeftTriggerAxis, m_operator::getRightTriggerAxis));
         new Button(m_operator::getRightBumper).whenHeld(new RunWinch(m_climber, () -> Constants.Subsystem.Climber.winchSpeed, m_operator::getLeftTriggerAxis, m_operator::getRightTriggerAxis));
+
     }
 
 
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return new InstantCommand();
+        return new FiveBall(m_drivetrainSubsystem);
     }
 
     private static double deadband(double value, double deadband) {

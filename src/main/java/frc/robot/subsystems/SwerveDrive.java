@@ -6,6 +6,7 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.swervedrivespecialties.swervelib.Mk4ModuleConfiguration;
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
@@ -57,12 +58,13 @@ public class SwerveDrive extends SubsystemBase {
     SwerveDriveOdometry m_odometry;
 
     public SwerveDrive() {
+        Mk4ModuleConfiguration configuration = new Mk4ModuleConfiguration();
+        configuration.setDriveCurrentLimit(30);
+        configuration.setSteerCurrentLimit(25);
         ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
         m_frontLeftModule = Mk4iSwerveModuleHelper.createNeo(
-                tab.getLayout("Front Left Module", BuiltInLayouts.kList)
-                        .withSize(2, 4)
-                        .withPosition(0, 0),
+                configuration,
                 Mk4iSwerveModuleHelper.GearRatio.L2,
                 FRONT_LEFT_MODULE_DRIVE_MOTOR,
                 FRONT_LEFT_MODULE_STEER_MOTOR,
@@ -72,9 +74,7 @@ public class SwerveDrive extends SubsystemBase {
 
         // We will do the same for the other modules
         m_frontRightModule = Mk4iSwerveModuleHelper.createNeo(
-                tab.getLayout("Front Right Module", BuiltInLayouts.kList)
-                        .withSize(2, 4)
-                        .withPosition(2, 0),
+                configuration,
                 Mk4iSwerveModuleHelper.GearRatio.L2,
                 FRONT_RIGHT_MODULE_DRIVE_MOTOR,
                 FRONT_RIGHT_MODULE_STEER_MOTOR,
@@ -83,9 +83,7 @@ public class SwerveDrive extends SubsystemBase {
         );
 
         m_backLeftModule = Mk4iSwerveModuleHelper.createNeo(
-                tab.getLayout("Back Left Module", BuiltInLayouts.kList)
-                        .withSize(2, 4)
-                        .withPosition(4, 0),
+                configuration,
                 Mk4iSwerveModuleHelper.GearRatio.L2,
                 BACK_LEFT_MODULE_DRIVE_MOTOR,
                 BACK_LEFT_MODULE_STEER_MOTOR,
@@ -94,9 +92,7 @@ public class SwerveDrive extends SubsystemBase {
         );
 
         m_backRightModule = Mk4iSwerveModuleHelper.createNeo(
-                tab.getLayout("Back Right Module", BuiltInLayouts.kList)
-                        .withSize(2, 4)
-                        .withPosition(6, 0),
+                configuration,
                 Mk4iSwerveModuleHelper.GearRatio.L2,
                 BACK_RIGHT_MODULE_DRIVE_MOTOR,
                 BACK_RIGHT_MODULE_STEER_MOTOR,
@@ -105,7 +101,7 @@ public class SwerveDrive extends SubsystemBase {
         );
 
 
-        //m_odometry = new SwerveDriveOdometry(m_kinematics, getGyroscopeRotation(), new Pose2d(0, 0, new Rotation2d()));
+        m_odometry = new SwerveDriveOdometry(m_kinematics, getGyroscopeRotation(), new Pose2d(0, 0, new Rotation2d()));
         m_states = m_kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, 0));
     }
 
@@ -168,15 +164,13 @@ public class SwerveDrive extends SubsystemBase {
         m_frontRightModule.set(m_states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, m_states[1].angle.getRadians());
         m_backLeftModule.set(m_states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, m_states[2].angle.getRadians());
         m_backRightModule.set(m_states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, m_states[3].angle.getRadians());
-        /*
+
         m_odometry.update(
                 getGyroscopeRotation(),
                 m_states[0],
                 m_states[1],
                 m_states[2],
                 m_states[3]);
-
-         */
 
     }
 }

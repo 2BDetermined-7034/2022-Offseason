@@ -68,12 +68,13 @@ public final class Constants {
         }
 
         public static final class Shooter {
-            public static final int leftShooterMotor = 10; //FIXME
-            public static final int rightShooterMotor = 8; //FIXME
+            public static final int leftShooterMotor = 10;
+            public static final int rightShooterMotor = 8;
             public static final int passiveOneSpeed = 0;
             public static final int passiveFullSpeed = 0;
             public static final double shooterInc = 0.05;
-            public static final double shooterRange = 0.005; //change?
+            public static final double shooterOffsetRange = 2;
+            public static final double shooterVoltageRange = 0.005; //change?
 
         }
 
@@ -87,18 +88,7 @@ public final class Constants {
             public static final double winchSpeed = 0.9; //fix?
         }
         public static final class Vision {
-            public static final int pGain = 5;
-
-            public static final double VisX_kP = 1;
-            public static final double VisX_MAX = .3;
-            public static final double VisTimeLimit = 5;
-            public static final double VisX_Offset = 0;
-            public static final double VisX_Tol = 0;
-            public static final double VisY_Tol = 5;
-            public static final double VisY_distanceConstant = 254.3;
-            public static final double VisY_Offset = 8;
-            public static final double VisY_VTol = 100;
-            public static final double VisX_VTol = 100;
+            public static final double pGain = -0.17;
             public static final int Vis_TimerConfidence = 5;
             public static double Vis_LLAngle = 35;
         }

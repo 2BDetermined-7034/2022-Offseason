@@ -44,7 +44,7 @@ public class SwervePathGenerator {
 
     }
 
-    SequentialCommandGroup getCommand(){
+    public SequentialCommandGroup getCommand(){
         return new SetPositionCommand(m_swerveDrive, m_trajectory.getInitialPose()).andThen(m_follower).andThen(new SetSpeedCommand(m_swerveDrive,  0, 0, 0));
     }
 }

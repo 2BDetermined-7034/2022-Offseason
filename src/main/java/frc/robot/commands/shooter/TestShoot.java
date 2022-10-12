@@ -4,26 +4,33 @@
 
 package frc.robot.commands.shooter;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.commands.sensor.SensorOverride;
 import frc.robot.subsystems.DigitalSensor;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Shooter;
 
+import java.util.function.DoubleSupplier;
 
-public class TrollShot extends CommandBase {
+
+public class TestShoot extends CommandBase {
+    @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+    private final DigitalSensor analogSensor;
 
     private final Shooter m_shooter;
-    private final Indexer m_indexer;
+    private final Indexer m_index;
 
 
     /**
-     * Creates a new TrollShot.
+     * Creates a new RunShooter.
      *
      * @param subsystem The subsystem used by this command.
      */
-    public TrollShot(Shooter subsystem, Indexer indexer, DigitalSensor sensor) {
-        this.m_indexer = indexer;
+    public TestShoot(Shooter subsystem, Indexer indexer, DigitalSensor sensor) {
+        this.m_index = indexer;
+        this.analogSensor = sensor;
         m_shooter = subsystem;
 
 
@@ -40,18 +47,21 @@ public class TrollShot extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        double visSpeed = -5;
-        m_shooter.setSpeed(visSpeed);
-        if (Math.abs(m_shooter.getVoltage() - visSpeed) <= Constants.Subsystem.Shooter.shooterVoltageRange) {
-            //new SensorOverride(analogSensor);
-            m_indexer.setSpeed(Constants.Subsystem.Indexer.speed);
+        double shooterSpeed = SmartDashboard.getNumber("shooter", 0);
+        m_shooter.setSpeed(shooterSpeed);
+        if (Math.abs(m_shooter.getVoltage() - shooterSpeed) <= Constants.Subsystem.Shooter.shooterVoltageRange) {
+            new SensorOverride(analogSensor);
+            m_index.setSpeed(Constants.Subsystem.Indexer.speed);
+
         }
+
+
     }
 
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        m_indexer.setSpeed(0);
+        m_index.setSpeed(0);
         m_shooter.setSpeed(0);
     }
 
