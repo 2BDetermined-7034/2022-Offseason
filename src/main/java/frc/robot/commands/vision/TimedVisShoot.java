@@ -81,7 +81,7 @@ public class TimedVisShoot extends CommandBase {
                 }
             }
         } else {
-            m_swerve.drive(new ChassisSpeeds(0, 0, -1));
+            m_swerve.drive(new ChassisSpeeds(0, 0, 0));
         }
     }
 

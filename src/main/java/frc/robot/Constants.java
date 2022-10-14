@@ -21,7 +21,7 @@ public final class Constants {
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.5779;
         public static final double xRateLimit = 2.5;
         public static final double yRateLimit = 2.5;
-        public static final double rotRateLimit = 1.5;
+        public static final double rotRateLimit = 2.5;
     }
 
     public static final class Auto {

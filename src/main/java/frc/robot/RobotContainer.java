@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.commands.Auto.FiveBall;
 import frc.robot.commands.Auto.TwoBall;
@@ -56,7 +57,7 @@ public class RobotContainer {
     public final Climber m_climber = new Climber(); //Climb
 
     private final TrollShot m_trollShot = new TrollShot(m_shooter, m_indexer);
-    //private final LaunchShot m_launch = new LaunchShot(m_shooter, m_indexer, m_analogSenseor);
+    private final LaunchShot m_launch = new LaunchShot(m_shooter, m_indexer, m_analogSenseor);
 
     /* Shooter */
     //private final RunShooter m_runShooter = new RunShooter(m_shooter, m_indexer, () -> Constants.shooter.speed, m_analogSenseor);
@@ -76,9 +77,9 @@ public class RobotContainer {
     /* Climber */
     public final RunSolenoid m_toggleClimbSolenoid = new RunSolenoid(m_climber);
 
-    //public final AddCorrect addCorrect = new AddCorrect();
-    //public final SubCorrect subCorrect = new SubCorrect();
-    //public final ResetCorrect resetCorrect = new ResetCorrect();
+    public final AddCorrect addCorrect = new AddCorrect();
+    public final SubCorrect subCorrect = new SubCorrect();
+    public final ResetCorrect resetCorrect = new ResetCorrect();
 
 
     /**
@@ -90,6 +91,7 @@ public class RobotContainer {
         m_chooser.setDefaultOption("two ball top", new TwoBallTop(m_drivetrainSubsystem, m_limeLight, m_indexer, m_shooter, m_analogSenseor, m_cargoIntake));
         m_chooser.addOption("two ball bottom", new TwoBall(m_drivetrainSubsystem, m_limeLight, m_indexer, m_shooter, m_analogSenseor, m_cargoIntake));
         m_chooser.addOption("five ball", new FiveBall(m_drivetrainSubsystem, m_limeLight, m_indexer, m_shooter, m_analogSenseor, m_cargoIntake));
+        m_chooser.addOption("Cringe do nothing", new InstantCommand());
 
         SmartDashboard.putData("Auto",m_chooser);
         // Register
@@ -102,7 +104,7 @@ public class RobotContainer {
                 m_drivetrainSubsystem,
                 () -> -modifyAxis(m_yspeedLimiter.calculate(m_controller.getLeftY()) * SwerveDrive.MAX_VELOCITY_METERS_PER_SECOND),
                 () -> -modifyAxis(m_xspeedLimiter.calculate(m_controller.getLeftX()) * SwerveDrive.MAX_VELOCITY_METERS_PER_SECOND),
-                () -> -modifyAxis(m_rotspeedLimiter.calculate(m_controller.getRightX()) * SwerveDrive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND)
+                () -> -modifyAxis(m_rotspeedLimiter.calculate(m_controller.getRightX() / 2) * SwerveDrive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND)
         ));
 
         // Configure the button bindings
@@ -117,10 +119,13 @@ public class RobotContainer {
         new Button(() -> m_controller.getRightTriggerAxis() > 0.1).whenHeld(m_runIntake);
         new Button(() -> m_controller.getRightTriggerAxis() > 0.1).whenHeld(m_runIndexer);
         new Button(() -> m_controller.getLeftTriggerAxis() > 0.1).whenHeld(m_shoot);
-        //new Button(m_controller::getBButton).whenHeld(); do 6 volt shot
+        new Button(m_controller::getBButton).whenHeld(m_launch);
         new Button(m_controller::getYButton).whenPressed(m_intakeSolToggle);
-        //new Button(m_controller::getAButton).whenHeld(m_trollShot);
-       // new Button(m_controller::getXButton) climb actuate
+        new Button(m_controller::getAButton).whenHeld(m_trollShot);
+        new Button(m_controller::getXButton).whenPressed(m_toggleClimbSolenoid);
+        new Button(m_controller::getLeftBumper).whenHeld(new RunWinch(m_climber, () -> -Constants.Subsystem.Climber.winchSpeed * 0.85, m_operator::getLeftTriggerAxis, m_operator::getRightTriggerAxis));
+        new Button(m_controller::getRightBumper).whenHeld(new RunWinch(m_climber, () -> Constants.Subsystem.Climber.winchSpeed, m_operator::getLeftTriggerAxis, m_operator::getRightTriggerAxis));
+
 
 
         //climbPad.getButton("B").toggleWhenPressed(m_toggleClimbSolenoid);

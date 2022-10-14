@@ -4,14 +4,18 @@
 
 package frc.robot.commands.shooter;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.commands.sensor.SensorOverride;
 import frc.robot.subsystems.DigitalSensor;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Shooter;
 
 
-public class TrollShot extends CommandBase {
+public class LaunchShot extends CommandBase {
+    @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+    private final DigitalSensor analogSensor;
 
     private final Shooter m_shooter;
     private final Indexer m_indexer;
@@ -22,8 +26,9 @@ public class TrollShot extends CommandBase {
      *
      * @param subsystem The subsystem used by this command.
      */
-    public TrollShot(Shooter subsystem, Indexer indexer) {
+    public LaunchShot(Shooter subsystem, Indexer indexer, DigitalSensor sensor) {
         this.m_indexer = indexer;
+        this.analogSensor = sensor;
         m_shooter = subsystem;
 
 
@@ -40,10 +45,10 @@ public class TrollShot extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        double visSpeed = 3;
+        double visSpeed = 5.45 - SmartDashboard.getNumber("ad", 0);
         m_shooter.setSpeed(visSpeed);
         if (Math.abs(m_shooter.getVoltage() - visSpeed) <= Constants.Subsystem.Shooter.shooterVoltageRange) {
-            //new SensorOverride(analogSensor);
+            new SensorOverride(analogSensor);
             m_indexer.setSpeed(Constants.Subsystem.Indexer.speed);
         }
     }
