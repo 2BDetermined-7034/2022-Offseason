@@ -5,16 +5,15 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Auto.FiveBall;
-import frc.robot.commands.Auto.OneMeter;
+import frc.robot.commands.Auto.TwoBall;
+import frc.robot.commands.Auto.TwoBallTop;
 import frc.robot.commands.Drive.DefaultDriveCommand;
 import frc.robot.commands.climb.RunSolenoid;
 import frc.robot.commands.climb.RunWinch;
@@ -22,19 +21,10 @@ import frc.robot.commands.indexer.EjectBot;
 import frc.robot.commands.indexer.EjectTop;
 import frc.robot.commands.indexer.RunIndexer;
 import frc.robot.commands.intake.RunIntakeMotors;
-import frc.robot.commands.intake.Solenoid;
 import frc.robot.commands.intake.SolenoidToggle;
-import frc.robot.commands.sensor.SensorOverride;
 import frc.robot.commands.shooter.*;
 import frc.robot.commands.vision.VisShoot;
 import frc.robot.subsystems.*;
-import frc.robot.commands.indexer.*;
-//import frc.robot.commands.intake.*;
-//import frc.robot.commands.shooter.*;
-//import frc.robot.commands.vision.*;
-//import frc.robot.commands.climb.*;
-import frc.robot.controllers.*;
-
 
 
 /**
@@ -47,9 +37,14 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     // Swerve
     private final SwerveDrive m_drivetrainSubsystem = new SwerveDrive();
+    SendableChooser<Command> m_chooser;
 
     // Controllers
     private final XboxController m_controller = new XboxController(0);
+    SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(Constants.DriveBase.xRateLimit);
+    SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(Constants.DriveBase.yRateLimit);
+    SlewRateLimiter m_rotspeedLimiter = new SlewRateLimiter(Constants.DriveBase.rotRateLimit);
+
     public final  XboxController m_operator = new XboxController(1);
 
     // Subsystems
@@ -60,7 +55,7 @@ public class RobotContainer {
     private final Shooter m_shooter = new Shooter(); // Shooter
     public final Climber m_climber = new Climber(); //Climb
 
-    private final TrollShot m_trollShot = new TrollShot(m_shooter, m_indexer, m_analogSenseor);
+    private final TrollShot m_trollShot = new TrollShot(m_shooter, m_indexer);
     //private final LaunchShot m_launch = new LaunchShot(m_shooter, m_indexer, m_analogSenseor);
 
     /* Shooter */
@@ -74,7 +69,6 @@ public class RobotContainer {
     /* Intake */
     private final RunIntakeMotors m_runIntake = new RunIntakeMotors(m_cargoIntake,  () -> Constants.Subsystem.Intake.speed, m_analogSenseor, m_operator::getAButton);
     private final SolenoidToggle m_intakeSolToggle = new SolenoidToggle(m_cargoIntake);
-    //private final Solenoid m_intakeup = new Solenoid(m_cargoIntake, false);
 
     private final EjectBot m_ejectBot = new EjectBot(m_shooter, m_indexer, m_cargoIntake, m_analogSenseor);
     private final EjectTop m_ejectTop = new EjectTop(m_shooter, m_indexer, m_analogSenseor);
@@ -91,7 +85,13 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        m_chooser = new SendableChooser<>();
 
+        m_chooser.setDefaultOption("two ball top", new TwoBallTop(m_drivetrainSubsystem, m_limeLight, m_indexer, m_shooter, m_analogSenseor, m_cargoIntake));
+        m_chooser.addOption("two ball bottom", new TwoBall(m_drivetrainSubsystem, m_limeLight, m_indexer, m_shooter, m_analogSenseor, m_cargoIntake));
+        m_chooser.addOption("five ball", new FiveBall(m_drivetrainSubsystem, m_limeLight, m_indexer, m_shooter, m_analogSenseor, m_cargoIntake));
+
+        SmartDashboard.putData("Auto",m_chooser);
         // Register
         m_cargoIntake.register();
         m_climber.register();
@@ -100,9 +100,9 @@ public class RobotContainer {
 
         m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
                 m_drivetrainSubsystem,
-                () -> -modifyAxis(m_controller.getLeftY() * SwerveDrive.MAX_VELOCITY_METERS_PER_SECOND),
-                () -> -modifyAxis(m_controller.getLeftX() * SwerveDrive.MAX_VELOCITY_METERS_PER_SECOND),
-                () -> -modifyAxis(m_controller.getRightX() * SwerveDrive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND)
+                () -> -modifyAxis(m_yspeedLimiter.calculate(m_controller.getLeftY()) * SwerveDrive.MAX_VELOCITY_METERS_PER_SECOND),
+                () -> -modifyAxis(m_xspeedLimiter.calculate(m_controller.getLeftX()) * SwerveDrive.MAX_VELOCITY_METERS_PER_SECOND),
+                () -> -modifyAxis(m_rotspeedLimiter.calculate(m_controller.getRightX()) * SwerveDrive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND)
         ));
 
         // Configure the button bindings
@@ -119,7 +119,7 @@ public class RobotContainer {
         new Button(() -> m_controller.getLeftTriggerAxis() > 0.1).whenHeld(m_shoot);
         //new Button(m_controller::getBButton).whenHeld(); do 6 volt shot
         new Button(m_controller::getYButton).whenPressed(m_intakeSolToggle);
-        new Button(m_controller::getAButton).whenHeld(m_trollShot);
+        //new Button(m_controller::getAButton).whenHeld(m_trollShot);
        // new Button(m_controller::getXButton) climb actuate
 
 
@@ -137,7 +137,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return new FiveBall(m_drivetrainSubsystem);
+        return m_chooser.getSelected();
     }
 
     private static double deadband(double value, double deadband) {
@@ -154,7 +154,7 @@ public class RobotContainer {
 
     private static double modifyAxis(double value) {
         // Deadband
-        value = deadband(value, 0.05) / 3;
+        value = deadband(value, 0.05);
 
         // Square the axis
         value = Math.copySign(value * value, value);

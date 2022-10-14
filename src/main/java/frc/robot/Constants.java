@@ -19,6 +19,9 @@ public final class Constants {
     public static final class DriveBase {
         public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.5779;
         public static final double DRIVETRAIN_WHEELBASE_METERS = 0.5779;
+        public static final double xRateLimit = 2.5;
+        public static final double yRateLimit = 2.5;
+        public static final double rotRateLimit = 1.5;
     }
 
     public static final class Auto {
@@ -88,7 +91,7 @@ public final class Constants {
             public static final double winchSpeed = 0.9; //fix?
         }
         public static final class Vision {
-            public static final double pGain = -0.17;
+            public static final double pGain = -0.12;
             public static final int Vis_TimerConfidence = 5;
             public static double Vis_LLAngle = 35;
         }

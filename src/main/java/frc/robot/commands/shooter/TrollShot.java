@@ -22,7 +22,7 @@ public class TrollShot extends CommandBase {
      *
      * @param subsystem The subsystem used by this command.
      */
-    public TrollShot(Shooter subsystem, Indexer indexer, DigitalSensor sensor) {
+    public TrollShot(Shooter subsystem, Indexer indexer) {
         this.m_indexer = indexer;
         m_shooter = subsystem;
 
