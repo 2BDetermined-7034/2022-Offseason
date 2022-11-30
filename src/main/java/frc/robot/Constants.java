@@ -4,7 +4,11 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -99,5 +103,16 @@ public final class Constants {
     public static final class pneumatics {
         public static final PneumaticsModuleType pneumaticsModuleType = PneumaticsModuleType.REVPH;
 
+    }
+
+    public static final class camera {
+        public static final String cameraName = "idk";
+        public static final Pose2d[] targetPoses = {
+            new Pose2d(new Translation2d(Units.inchesToMeters(300), Units.inchesToMeters(252)), new Rotation2d(Units.degreesToRadians(90))),
+            new Pose2d(new Translation2d(Units.inchesToMeters(300), Units.inchesToMeters(118)), new Rotation2d(Units.degreesToRadians(90))),
+        }; // We can only put targets on our side of field for bunny bots, so we only need 2
+
+
+        
     }
 }
