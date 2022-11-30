@@ -38,8 +38,7 @@ public class Camera extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void update(
-            DifferentialDriveWheelSpeeds actWheelSpeeds, double leftDist, double rightDist) {
+  public void update(DifferentialDriveWheelSpeeds actWheelSpeeds, double leftDist, double rightDist) {
         m_poseEstimator.update(gyro.getRotation2d(), actWheelSpeeds, leftDist, rightDist);
 
         var res = camera.getLatestResult();
@@ -54,7 +53,7 @@ public class Camera extends SubsystemBase {
 
   public Pose2d getFieldPose() {
 
-    var result = camera.getLatestResult();
+    return m_poseEstimator.getFieldPose();
 
 
 

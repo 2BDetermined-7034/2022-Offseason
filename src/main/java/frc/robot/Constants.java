@@ -4,11 +4,7 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -106,13 +102,13 @@ public final class Constants {
     }
 
     public static final class camera {
-        public static final String cameraName = "idk";
+        public static final String cameraName = "mmol_idk";
+        public static final double[][] tagXY = {{Units.inchesToMeters(300),Units.inchesToMeters(324-72-12)},{Units.inchesToMeters(300),Units.inchesToMeters(324-72-12-84-12)}};
+        // We can only place tags on score towers facing us, meaning we only need 2 for odometry on our side of the field
         public static final Pose2d[] targetPoses = {
-            new Pose2d(new Translation2d(Units.inchesToMeters(300), Units.inchesToMeters(252)), new Rotation2d(Units.degreesToRadians(90))),
-            new Pose2d(new Translation2d(Units.inchesToMeters(300), Units.inchesToMeters(118)), new Rotation2d(Units.degreesToRadians(90))),
-        }; // We can only put targets on our side of field for bunny bots, so we only need 2
+            new Pose2d(tagXY[0][0], tagXY[0][1], new Rotation2d(Units.degreesToRadians(90))),
+            new Pose2d(tagXY[1][0], tagXY[1][1], new Rotation2d(Units.degreesToRadians(90)))
 
-
-        
+        };
     }
 }
