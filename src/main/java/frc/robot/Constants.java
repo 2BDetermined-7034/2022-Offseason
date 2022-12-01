@@ -4,9 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**
@@ -105,13 +102,6 @@ public final class Constants {
     }
 
     public static final class camera {
-        public static final String cameraName = "mmol_idk";
-        public static final double[][] tagXYZ = {{Units.inchesToMeters(300),Units.inchesToMeters(324-72-12), Units.inchesToMeters(30)},{Units.inchesToMeters(300),Units.inchesToMeters(324-72-12-84-12), Units.inchesToMeters(30)}};
-        // We can only place tags on score towers facing us, meaning we only need 2 for odometry on our side of the field
-        public static final Pose3d[] targetPoses = {
-            new Pose3d(tagXYZ[0][0], tagXYZ[0][1], tagXYZ[0][2], new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(0), Units.degreesToRadians(180))),
-            new Pose3d(tagXYZ[1][0], tagXYZ[1][1], tagXYZ[1][2], new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(0), Units.degreesToRadians(180)))
-
-        }; //(roll, pitch, yaw)
+        public static final String cameraName = "mmol_idk"; //
     }
 }
