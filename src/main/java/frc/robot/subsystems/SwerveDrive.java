@@ -37,7 +37,7 @@ public class SwerveDrive extends SubsystemBase {
             Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
     //FL, FR, BL, BR
-    private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
+    public final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
             new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
             new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0),
             new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
@@ -52,7 +52,7 @@ public class SwerveDrive extends SubsystemBase {
     private final SwerveModule m_backRightModule;
 
 
-    SwerveModuleState[] m_states;
+    public SwerveModuleState[] m_states;
 
     SwerveDriveOdometry m_odometry;
 

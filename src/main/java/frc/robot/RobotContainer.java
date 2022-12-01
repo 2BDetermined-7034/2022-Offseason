@@ -5,13 +5,19 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.MatBuilder;
+import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
+import frc.robot.commands.CameraCommand;
 import frc.robot.commands.Auto.FiveBall;
 import frc.robot.commands.Auto.TwoBall;
 import frc.robot.commands.Auto.TwoBallTop;
@@ -59,6 +65,8 @@ public class RobotContainer {
     private final TrollShot m_trollShot = new TrollShot(m_shooter, m_indexer);
     private final LaunchShot m_launch = new LaunchShot(m_shooter, m_indexer, m_analogSenseor);
 
+    private final Camera camera = new Camera();
+
     /* Shooter */
     //private final RunShooter m_runShooter = new RunShooter(m_shooter, m_indexer, () -> Constants.shooter.speed, m_analogSenseor);
     private final TestShoot m_testShoot = new TestShoot(m_shooter, m_indexer, m_analogSenseor);
@@ -80,6 +88,9 @@ public class RobotContainer {
     public final AddCorrect addCorrect = new AddCorrect();
     public final SubCorrect subCorrect = new SubCorrect();
     public final ResetCorrect resetCorrect = new ResetCorrect();
+
+    /* Camera */
+    public final CameraCommand camCommand = new CameraCommand(camera, m_drivetrainSubsystem);
 
 
     /**
@@ -106,6 +117,8 @@ public class RobotContainer {
                 () -> -modifyAxis(m_xspeedLimiter.calculate(m_controller.getLeftX()) * SwerveDrive.MAX_VELOCITY_METERS_PER_SECOND),
                 () -> -modifyAxis(m_rotspeedLimiter.calculate(m_controller.getRightX() / 2) * SwerveDrive.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND)
         ));
+
+        camera.setDefaultCommand(camCommand);
 
         // Configure the button bindings
         configureButtonBindings();
